@@ -3,274 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSE ICT 數據大冒險：二補碼與容量轉換挑戰賽</title>
-    <!-- 引入 Tailwind CSS 進行現代化快速排版 -->
+    <title>史迪仔的 DSE ICT 太空數據大冒險</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 FontAwesome 圖標 -->
+    <!-- FontAwesome 圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 針對 iPad 觸控的微調與防止文字選取 */
+        /* 霓虹發光與太空背景動畫 */
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(20, 184, 166, 0.5)); }
+            50% { transform: scale(1.02); filter: drop-shadow(0 0 15px rgba(20, 184, 166, 0.8)); }
+        }
+        .reactor-glow {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
         .no-select {
             user-select: none;
             -webkit-user-select: none;
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans no-select">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans no-select overflow-x-hidden">
 
-    <!-- 頂部導航與計分板 -->
-    <header class="bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-            <h1 class="text-xl font-bold flex items-center gap-2">
-                <i class="fa-solid fa-laptop-code"></i>
-                DSE ICT 數據大冒險
+    <!-- 星空背景裝飾 -->
+    <div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-purple-950 to-slate-950 opacity-80 pointer-events-none -z-10"></div>
+
+    <!-- 頂部街機控制面板 -->
+    <header class="border-b border-purple-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-lg sm:text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400">
+                <i class="fa-solid fa-gamepad text-teal-400 animate-pulse"></i> STITCH DATA ARCADE
             </h1>
-            <!-- 實時狀態 -->
-            <div class="flex items-center gap-4 mt-2 sm:mt-0 text-sm font-semibold">
-                <div class="bg-teal-700/50 px-3 py-1.5 rounded-full">
-                    <i class="fa-solid fa-trophy text-yellow-300"></i> 得分: <span id="score">0</span>
+            <div class="flex items-center gap-4 text-xs sm:text-sm font-bold">
+                <div class="bg-teal-500/10 border border-teal-500/30 px-3 py-1 rounded-full text-teal-300">
+                    <i class="fa-solid fa-bolt text-yellow-400"></i> 得分: <span id="score">0</span>
                 </div>
-                <div class="bg-teal-700/50 px-3 py-1.5 rounded-full">
-                    <i class="fa-solid fa-fire text-orange-400"></i> 連擊: <span id="combo">0</span>
+                <div class="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-purple-300">
+                    <i class="fa-solid fa-fire text-orange-400"></i> 連擊 Combo: <span id="combo">0</span>
                 </div>
-                <button id="btn-reset-score" class="text-xs bg-red-500 hover:bg-red-600 px-2 py-1 rounded transition">
-                    重置紀錄
-                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 py-8">
-        <!-- 模式選擇選單 -->
-        <section id="lobby-section" class="grid md:grid-cols-2 gap-8 mt-4">
-            <!-- 模式一：二補碼特工 -->
-            <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
-                <div class="p-6">
-                    <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl mb-4">
-                        <i class="fa-solid fa-binary"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">模式一：二補碼解密特工</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-4">
-                        透過動態 8位元(Bit) 視覺化面板，學習如何將正負數轉為「二補碼」。內建互動沙盒與自我特訓闖關！
-                    </p>
-                    <ul class="text-xs text-slate-600 space-y-1 bg-slate-50 p-3 rounded-lg mb-4">
-                        <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> 掌握正負數邊界與溢出誤差 (Overflow)</li>
-                        <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> 實時切換「取反」與「加一」的運算步驟</li>
-                    </ul>
-                </div>
-                <div class="p-6 bg-slate-50 border-t border-slate-100">
-                    <button onclick="switchMode('twos-complement')" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-md shadow-teal-600/20">
-                        進入特訓 <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+        <!-- ==================== 遊戲大廳 / 關卡選擇 ==================== -->
+        <section id="lobby-section" class="py-12">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold text-teal-400 tracking-widest uppercase bg-teal-400/10 px-3 py-1 rounded-full">中四級 ICT 數據表示互動教材</span>
+                <h2 class="text-3xl sm:text-4xl font-black mt-3 mb-4 tracking-tight">
+                    史迪仔太空數據大冒險
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    太空船警報！協助史迪仔調校「反物質重力錨」，並發射「容量防盾」擊碎迎面而來的多媒體隕石吧！
+                </p>
             </div>
 
-            <!-- 模式二：容量轉換傳送門 -->
-            <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
-                <div class="p-6">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-4">
-                        <i class="fa-solid fa-hard-drive"></i>
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- 卡片一：反物質重力錨 -->
+                <div class="bg-slate-900/60 border border-teal-500/30 rounded-3xl p-6 hover:border-teal-400 hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-solid fa-anchor"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-teal-300">關卡一：反物質重力平衡器 (二補碼)</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            太空船正被黑洞往後拉！首個位元（MSB）是強力「反物質重力錨 (-128)」，其餘位元是正物質推進器。調校槓桿，平衡推力以維持軌道！
+                        </p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">模式二：極速容量轉換 portal</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-4">
-                        挑戰 B、KB, MB, GB, TB 之間的快速轉換。內建 DSE 必考的「影片檔案大小估算」Boss 挑戰關卡！
-                    </p>
-                    <ul class="text-xs text-slate-600 space-y-1 bg-slate-50 p-3 rounded-lg mb-4">
-                        <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> 快速理解 1024 與 8 的換算邏輯</li>
-                        <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> 實戰 DSE 影片/音頻多媒體容量計算</li>
-                    </ul>
+                    <button onclick="startGame('twos-complement')" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-black py-3 rounded-xl transition hover:opacity-90 active:scale-95 shadow-lg shadow-teal-500/20">
+                        啟動反應爐 <i class="fa-solid fa-play ml-1"></i>
+                    </button>
                 </div>
-                <div class="p-6 bg-slate-50 border-t border-slate-100">
-                    <button onclick="switchMode('capacity')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-md shadow-indigo-600/20">
-                        進入傳送門 <i class="fa-solid fa-arrow-right ml-1"></i>
+
+                <!-- 卡片二：容量防盾對撞機 -->
+                <div class="bg-slate-900/60 border border-purple-500/30 rounded-3xl p-6 hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-purple-300">關卡二：雲端要塞防盾對撞 (容量轉換)</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            大大小小的多媒體數據隕石正砸向雲端伺服器！心算隕石的等值單位（MB 轉 GB、KB 轉 Byte 等），釋放正確的能量防盾進行湮滅對撞！
+                        </p>
+                    </div>
+                    <button onclick="startGame('capacity-shield')" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-black py-3 rounded-xl transition hover:opacity-90 active:scale-95 shadow-lg shadow-purple-500/20">
+                        進入防線 <i class="fa-solid fa-play ml-1"></i>
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== 模式一：二補碼區塊 ==================== -->
-        <section id="twos-complement-section" class="hidden space-y-6">
-            <button onclick="showLobby()" class="text-teal-600 hover:text-teal-800 font-semibold flex items-center gap-1">
-                <i class="fa-solid fa-chevron-left"></i> 返回主選單
+        <!-- ==================== 遊戲一：二補碼重力平衡器 ==================== -->
+        <section id="game-twos-section" class="hidden space-y-6">
+            <button onclick="backToLobby()" class="text-teal-400 hover:text-teal-300 font-bold flex items-center gap-1 text-sm">
+                <i class="fa-solid fa-chevron-left"></i> 逃離戰場 (返回選單)
             </button>
 
-            <!-- 互動沙盒：8-bit 視覺化轉換器 -->
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
-                <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-teal-700">
-                    <i class="fa-solid fa-sliders"></i> 8-Bit 二補碼互動沙盒
-                </h3>
-                <p class="text-xs text-slate-500 mb-4">請點擊下方的位元方塊，自由切換 0 與 1。下方會即時計算不同進制與表示法的數值：</p>
-                
-                <!-- 位元切換按鈕組 -->
-                <div class="grid grid-cols-8 gap-2 sm:gap-4 max-w-2xl mx-auto mb-6">
-                    <!-- JS 動態生成 8個位元方塊 -->
-                    <div id="bit-container" class="contents"></div>
-                </div>
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- 左側：駕駛艙儀表板 (反應爐數值) -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between items-center">
+                    <div class="text-center w-full">
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500">推進控制台</span>
+                        <h3 class="text-lg font-black text-slate-300 mt-1 mb-6">飛行遙測儀</h3>
 
-                <!-- 運算步驟引導按鈕 -->
-                <div class="flex flex-wrap gap-2 justify-center mb-6">
-                    <button id="btn-sandbox-invert" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold py-2 px-3 rounded-lg transition">
-                        第一步：全部取反（求一補碼）
-                    </button>
-                    <button id="btn-sandbox-add1" class="bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold py-2 px-3 rounded-lg transition">
-                        第二步：結果加一（求二補碼）
-                    </button>
-                    <button id="btn-sandbox-reset" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-lg transition">
-                        重置為 00000000
-                    </button>
-                </div>
+                        <!-- 目標與當前值的發光圓環 -->
+                        <div class="relative w-44 h-44 mx-auto mb-6 flex flex-col items-center justify-center rounded-full border-4 border-dashed border-teal-500/30 reactor-glow">
+                            <span class="text-xs text-slate-400 font-bold">目標推力</span>
+                            <span id="tc-target-val" class="text-4xl font-black text-teal-400 tracking-tight">-53</span>
+                            <span class="text-[10px] text-teal-500 font-mono mt-1">kW</span>
+                        </div>
 
-                <!-- 數據實時顯示 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-xl">
-                    <div class="text-center p-2 border-r border-slate-200 last:border-none">
-                        <div class="text-xs text-slate-500">無符號十進制 (Unsigned)</div>
-                        <div id="val-unsigned" class="text-xl font-bold text-slate-800">0</div>
-                    </div>
-                    <div class="text-center p-2 border-r border-slate-200 last:border-none">
-                        <div class="text-xs text-slate-500">符號及值 (Sign & Mag.)</div>
-                        <div id="val-signmag" class="text-xl font-bold text-slate-800">0</div>
-                        <div class="text-[10px] text-slate-400">首位為符號 (0+, 1-)</div>
-                    </div>
-                    <div class="text-center p-2 border-r border-slate-200 last:border-none">
-                        <div class="text-xs text-slate-500 font-semibold text-teal-600">二補碼表示值 (Two's Comp)</div>
-                        <div id="val-twos" class="text-2xl font-black text-teal-600">0</div>
-                        <div class="text-[10px] text-slate-400">範圍: -128 至 +127</div>
-                    </div>
-                    <div class="text-center p-2">
-                        <div class="text-xs text-slate-500">十六進制 (Hexadecimal)</div>
-                        <div id="val-hex" class="text-xl font-bold text-slate-800">00</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 特訓挑戰闖關區 -->
-            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-teal-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                        二補碼解密闖關中
-                    </span>
-                    <span class="text-xs text-slate-400">難度：中四級 ICT 必修</span>
-                </div>
-                
-                <!-- 問題展示 -->
-                <div class="mb-6">
-                    <h4 class="text-xs text-slate-400 mb-1">任務指令：</h4>
-                    <p id="binary-question-text" class="text-lg font-semibold text-teal-300">正在生成題目...</p>
-                </div>
-
-                <!-- 答題區域 (多選題) -->
-                <div id="binary-options-container" class="grid sm:grid-cols-2 gap-4">
-                    <!-- JS 動態生成選項 -->
-                </div>
-            </div>
-        </section>
-
-        <!-- ==================== 模式二：容量轉換區塊 ==================== -->
-        <section id="capacity-section" class="hidden space-y-6">
-            <button onclick="showLobby()" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1">
-                <i class="fa-solid fa-chevron-left"></i> 返回主選單
-            </button>
-
-            <!-- 實用沙盒：單位快速換算器 -->
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
-                <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-indigo-700">
-                    <i class="fa-solid fa-calculator"></i> 數據容量單位沙盒
-                </h3>
-                <div class="grid sm:grid-cols-3 gap-4 items-end mb-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">輸入數值</label>
-                        <input id="conv-input" type="number" value="1" class="w-full border border-slate-200 rounded-lg p-2 text-sm focus:outline-none focus:border-indigo-500" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">原始單位</label>
-                        <select id="conv-from" class="w-full border border-slate-200 rounded-lg p-2 text-sm focus:outline-none focus:border-indigo-500">
-                            <option value="bit">位元 (Bit)</option>
-                            <option value="B">位元組 (Byte)</option>
-                            <option value="KB">千位元組 (KB)</option>
-                            <option value="MB" selected>兆位元組 (MB)</option>
-                            <option value="GB">吉位元組 (GB)</option>
-                            <option value="TB">太位元組 (TB)</option>
-                        </select>
-                    </div>
-                    <div class="bg-indigo-50 p-2.5 rounded-lg text-xs text-indigo-700">
-                        <i class="fa-solid fa-circle-info"></i> 計算規則：1 Byte = 8 Bits ； 其他相鄰單位皆為 1024 進制。
-                    </div>
-                </div>
-
-                <!-- 換算結果列表 -->
-                <div class="grid grid-cols-2 md:grid-cols-6 gap-2 pt-2">
-                    <div class="bg-slate-50 p-2 rounded-lg text-center">
-                        <div class="text-[10px] text-slate-400">Bits</div>
-                        <div id="res-bit" class="text-sm font-bold text-slate-700">-</div>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-lg text-center">
-                        <div class="text-[10px] text-slate-400">Bytes</div>
-                        <div id="res-B" class="text-sm font-bold text-slate-700">-</div>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-lg text-center">
-                        <div class="text-[10px] text-slate-400">KB</div>
-                        <div id="res-KB" class="text-sm font-bold text-slate-700">-</div>
-                    </div>
-                    <div class="bg-indigo-50/50 p-2 rounded-lg text-center border border-indigo-100">
-                        <div class="text-[10px] text-indigo-500 font-semibold">MB</div>
-                        <div id="res-MB" class="text-sm font-bold text-indigo-700">-</div>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-lg text-center">
-                        <div class="text-[10px] text-slate-400">GB</div>
-                        <div id="res-GB" class="text-sm font-bold text-slate-700">-</div>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-lg text-center">
-                        <div class="text-[10px] text-slate-400">TB</div>
-                        <div id="res-TB" class="text-sm font-bold text-slate-700">-</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Boss 戰：多媒體容量計算題 -->
-            <div class="bg-gradient-to-br from-indigo-950 to-slate-900 text-white rounded-2xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-indigo-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                        容量計算 Boss 戰
-                    </span>
-                    <span class="text-xs text-indigo-300"><i class="fa-solid fa-hourglass-half"></i> 精準計算（四捨五入）</span>
-                </div>
-
-                <!-- 題目敘述 -->
-                <div class="mb-6 bg-slate-800/50 p-4 rounded-xl border border-indigo-500/30">
-                    <h4 class="text-xs text-indigo-400 mb-2 font-bold"><i class="fa-solid fa-circle-question"></i> DSE 必學公式題：</h4>
-                    <p id="capacity-question-text" class="text-base text-slate-200 leading-relaxed">正在生成影片估計題目...</p>
-                </div>
-
-                <!-- 答題選項 -->
-                <div id="capacity-options-container" class="grid sm:grid-cols-2 gap-4">
-                    <!-- JS 動態生成選項 -->
-                </div>
-            </div>
-        </section>
-
-        <!-- ==================== 提示反饋彈出視窗 (Modal) ==================== -->
-        <div id="feedback-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform scale-95 transition-all duration-300">
-                <!-- 頭部反饋狀態 -->
-                <div id="modal-header-bg" class="p-6 text-center text-white">
-                    <div id="modal-icon" class="text-5xl mb-2"></div>
-                    <h3 id="modal-title" class="text-2xl font-black">答對了！</h3>
-                </div>
-                <!-- 內容與解析 -->
-                <div class="p-6">
-                    <div class="flex items-start gap-3 bg-slate-50 p-4 rounded-xl mb-4 border border-slate-100">
-                        <span class="text-2xl" id="stitch-emoji">😆</span>
-                        <div>
-                            <h4 class="text-xs text-slate-400 font-bold">史迪仔的回應：</h4>
-                            <p id="stitch-reaction-text" class="text-sm font-semibold text-slate-700"></p>
+                        <!-- 當前船體推力 -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 w-full">
+                            <div class="text-xs text-slate-400 font-bold">當前推進反應值</div>
+                            <div id="tc-current-val" class="text-3xl font-black text-rose-500 tracking-tight mt-1">0</div>
+                            <div class="text-[10px] text-slate-500 mt-1" id="tc-status-text">重力平衡未達成！</div>
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <h4 class="text-xs text-slate-400 font-bold mb-1"><i class="fa-solid fa-lightbulb text-yellow-500"></i> DSE 知識點解析：</h4>
-                        <p id="modal-explanation" class="text-xs text-slate-600 leading-relaxed bg-amber-50/50 p-3 rounded-lg border border-amber-100"></p>
+
+                    <!-- 史迪仔的飛行即時情緒頭像 -->
+                    <div class="w-full mt-6 bg-slate-950/50 p-3 rounded-2xl border border-slate-800 flex items-center gap-3">
+                        <span id="stitch-face" class="text-4xl">😐</span>
+                        <div class="text-left">
+                            <h4 class="text-xs font-bold text-slate-400">副駕駛 史迪仔：</h4>
+                            <p id="stitch-live-bubble" class="text-xs text-slate-300 leading-snug">「等等，重力錨怎麼沒動靜？快拉槓桿！」</p>
+                        </div>
                     </div>
-                    <button id="btn-next-question" class="w-full py-3 px-4 rounded-xl text-white font-bold transition shadow-lg">
-                        繼續挑戰下一題
+                </div>
+
+                <!-- 右側：8位元推進槓桿 (控制開關) -->
+                <div class="lg:col-span-2 bg-slate-900/80 border border-teal-500/20 rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-black text-teal-300"><i class="fa-solid fa-gamepad"></i> 重力錨與推進槓桿 (8-Bit)</h3>
+                            <!-- 倒數計時器 -->
+                            <div class="bg-red-500/10 border border-red-500/30 px-3 py-1 rounded-full text-red-400 font-bold text-xs animate-pulse">
+                                <i class="fa-solid fa-clock-rotate-left"></i> 倒數: <span id="tc-timer">25</span>s
+                            </div>
+                        </div>
+
+                        <!-- 槓桿面板 -->
+                        <div id="lever-panel" class="grid grid-cols-8 gap-2 sm:gap-4 h-64 items-center">
+                            <!-- JS 動態生成像實體物理槓桿一樣的開關，向上為 1，向下為 0 -->
+                        </div>
+
+                        <!-- 重力與推進力文字化解析 -->
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="bg-rose-950/20 border border-rose-500/20 p-3 rounded-xl">
+                                <div class="text-[10px] text-rose-400 font-bold"><i class="fa-solid fa-anchor"></i> 重力錨首位元 (MSB) 狀態</div>
+                                <div class="text-xs text-slate-300 mt-1" id="msb-anchor-desc">未拋錨 (位值: 0 kW)</div>
+                            </div>
+                            <div class="bg-teal-950/20 border border-teal-500/20 p-3 rounded-xl">
+                                <div class="text-[10px] text-teal-400 font-bold"><i class="fa-solid fa-circle-nodes"></i> 微型推進器 (b6 - b0) 總輸出</div>
+                                <div class="text-xs text-slate-300 mt-1" id="thruster-sum-desc">0 kW</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 玩法提示 -->
+                    <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-teal-400 text-sm"></i>
+                        <span><b>特工指引：</b> 負數目標？先把最左邊的<b>「重力錨」拉上去變為 1 (-128)</b>，再用右邊的正物質推進器累加補滿！</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 遊戲二：容量防盾對撞機 ==================== -->
+        <section id="game-shield-section" class="hidden space-y-6 max-w-4xl mx-auto">
+            <button onclick="backToLobby()" class="text-purple-400 hover:text-purple-300 font-bold flex items-center gap-1 text-sm">
+                <i class="fa-solid fa-chevron-left"></i> 撤退 (返回選單)
+            </button>
+
+            <div class="bg-slate-900/80 border border-purple-500/20 rounded-3xl p-6 relative overflow-hidden">
+                <!-- 遊戲頂端數據顯示 -->
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+                    <div>
+                        <span class="text-xs text-slate-400 font-bold">雲端要塞防禦線</span>
+                        <h3 class="text-lg font-black text-purple-300 mt-0.5">防衛對撞雷達</h3>
+                    </div>
+                    <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-amber-400 font-bold text-xs">
+                        防盾充能倒數: <span id="shield-timer">15</span>s
+                    </div>
+                </div>
+
+                <!-- 戰場實體模擬區 -->
+                <div class="h-64 bg-slate-950 rounded-2xl relative border border-slate-800 flex flex-col justify-between items-center p-6 overflow-hidden">
+                    
+                    <!-- 隕石槽：顯示墜落的容量隕石 -->
+                    <div id="meteor-entity" class="w-full text-center transition-all duration-300 py-3 rounded-xl bg-red-500/5 border border-red-500/20 max-w-sm mt-4">
+                        <span class="text-xs text-red-400 font-bold uppercase tracking-wider animate-pulse"><i class="fa-solid fa-circle-exclamation"></i> 隕石來襲</span>
+                        <div id="meteor-val-display" class="text-3xl font-black text-red-500 tracking-wider mt-1 font-mono">1,024 MB</div>
+                    </div>
+
+                    <!-- 對撞碰撞波裝飾 -->
+                    <div class="w-full flex justify-center items-center gap-2 text-slate-600 my-4 text-lg">
+                        <i class="fa-solid fa-arrow-down-long animate-bounce text-red-500"></i>
+                        <span class="text-xs font-mono tracking-widest text-slate-500">COLLISION INTERCEPT ZONE</span>
+                        <i class="fa-solid fa-arrow-up-long animate-bounce text-purple-500"></i>
+                    </div>
+
+                    <!-- 史迪仔的要塞防線 -->
+                    <div class="w-full flex justify-between items-center border-t border-purple-500/30 pt-4 bg-purple-950/10 px-4 rounded-xl">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🛡️</span>
+                            <span class="text-xs font-bold text-purple-400">要塞屏障運作中</span>
+                        </div>
+                        <div class="text-xs text-slate-400">
+                            公式提示：1 GB = 1024 MB | 1 MB = 1024 KB | 1 Byte = 8 bits
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部：三個待選防盾 (對撞按鈕) -->
+                <div class="mt-6">
+                    <p class="text-xs text-slate-400 text-center mb-4">請在隕石撞擊前，點擊與隕石大小「完全等值」的防禦盾釋放對撞：</p>
+                    <div id="shield-options-container" class="grid sm:grid-cols-3 gap-4">
+                        <!-- JS 動態生成三個防盾選項 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 街機互動反饋視窗 (Modal) ==================== -->
+        <div id="feedback-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden transform scale-95 transition-all duration-300">
+                <!-- 狀態指示發光條 -->
+                <div id="modal-header-bg" class="p-6 text-center text-white">
+                    <div id="modal-icon" class="text-5xl mb-2 text-teal-400"></div>
+                    <h3 id="modal-title" class="text-2xl font-black tracking-wider">COMPLETED!</h3>
+                </div>
+
+                <!-- 反饋本體 -->
+                <div class="p-6 space-y-4">
+                    <!-- 史迪仔漫畫反饋 -->
+                    <div class="flex items-start gap-3 bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <span class="text-4xl" id="stitch-emoji">😆</span>
+                        <div class="text-left">
+                            <h4 class="text-xs font-bold text-slate-400">史迪仔的回應：</h4>
+                            <p id="stitch-reaction-text" class="text-xs text-slate-200 leading-relaxed mt-1"></p>
+                        </div>
+                    </div>
+
+                    <!-- DSE 知識解析 -->
+                    <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4">
+                        <h4 class="text-xs font-bold text-teal-400 flex items-center gap-1 mb-2">
+                            <i class="fa-solid fa-graduation-cap"></i> DSE ICT 考試重點解析
+                        </h4>
+                        <p id="modal-explanation" class="text-xs text-slate-400 leading-relaxed font-mono"></p>
+                    </div>
+
+                    <button id="btn-next-question" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-black py-3 rounded-xl transition hover:opacity-90 active:scale-95 shadow-lg shadow-teal-500/20">
+                        進入下一關
                     </button>
                 </div>
             </div>
@@ -278,12 +263,12 @@
     </main>
 
     <!-- 頁尾 -->
-    <footer class="bg-slate-100 border-t border-slate-200 text-center py-6 text-xs text-slate-400 mt-12">
-        <p>© 2025 數據大冒險 DSE ICT 輔助學習網頁</p>
-        <p class="mt-1">專為中四數據表示單元設計 · 使用 HTML5 & Vanilla JS 構建</p>
+    <footer class="text-center py-8 text-[10px] text-slate-600 border-t border-slate-900 mt-12">
+        <p>© 2025 史迪仔的 DSE ICT 太空數據街機版</p>
+        <p class="mt-1">由 Vanilla JS、Tailwind CSS 與 Web Audio API 高效驅動</p>
     </footer>
 
-    <!-- 載入外部 JS 邏輯 -->
+    <!-- 遊戲核心 JS 檔案 -->
     <script src="game.js"></script>
 </body>
 </html>
